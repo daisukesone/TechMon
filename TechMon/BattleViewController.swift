@@ -153,7 +153,6 @@ class BattleViewController: UIViewController {
                 finishBattle(vanishImageView: enemyImageView, isPlayerWin: true)
             }
         }
-
     }
 
     override func didReceiveMemoryWarning() {

@@ -72,6 +72,7 @@ class LobbyViewController: UIViewController {
     }
     
     //スタミナの回復
+    
     @objc func updateStaminaValue() {
         if stamina < 100{
             
