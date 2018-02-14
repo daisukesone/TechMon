@@ -22,10 +22,8 @@ class BattleViewController: UIViewController {
     
     let techMonManager = TechMonManager.shared
     
-    var playerHP = 100
-    var playerMP = 0
-    var enemyHP = 100
-    var enemyMP = 0
+    var player: Character!
+    var enemy: Character!
     
     var gameTimer: Timer!
     var isPlayerAttackAvalable: Bool = true
@@ -34,17 +32,28 @@ class BattleViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+        //キャラクターの読み込み
+        player = techMonManager.player
+        enemy = techMonManager.enemy
+        
+        
+    //ステータスの反映
+        func updateUI() {
+            
         //プレイヤーのステータスを反映
-        playerNameLabel.text  = "勇者"
-        playerImageView.image = UIImage(named: "yusha.png")
-        playerHPLabel.text = "\(playerHP)/ 100"
-        playerMPLabel.text = "\(playerMP)/ 20"
+    
+        playerHPLabel.text = "\(player.currentHP)/ \(player.maxHP)"
+        playerMPLabel.text = "\(player.currentMP)/ \(player.maxMP)"
+            
+        
         
         //敵のステータスを反映
         enemyNameLabel.text  = "勇者"
         enemyImageView.image = UIImage(named: "monster.png")
-        enemyHPLabel.text = "\(enemyHP)/ 200"
-        enemyMPLabel.text = "\(enemyMP)/ 35"
+        enemyHPLabel.text = "\(enemy.currentHP)/ \(enemy.maxHP)"
+        enemyMPLabel.text = "\(enemy.currentMP)/ \(enemy.maxMP)"
+            
         
         //ゲームスタート
         gameTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(updateGame), userInfo: nil, repeats: true)
@@ -64,11 +73,11 @@ class BattleViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         
         super.viewWillDisappear(animated)
-        TechMonManager.stopBGM()
+        techMonManager.stopBGM()
     }
     
     //0.1秒ごとにゲームの状態を更新する
-    func updateaGame(){
+    func updateGame(){
         //プレイヤーのステータスを更新
         playerMP += 1
         if playerMP >= 20 {
@@ -101,11 +110,18 @@ class BattleViewController: UIViewController {
         playerHP -= 20
         playerHPLabel.text = "\(playerHP)/100"
         if playerHP <= 0 {
-            finishBattle(vanishImageView: playerMPLabel, isPlayerwin: false)
+            finishBattle(vanishImageView: playerImageView, isPlayerwin: false)
             
         }
     }
     
+    //勝敗判定をする
+        func judgeBattle(){
+            if player.currentHP <= 0 {
+                
+            }
+        }
+        
     //勝敗が決定した時の処理
     func finishBattle(vanishImageView: UIImageView, isPlayerwin: Bool){
         
@@ -125,26 +141,31 @@ class BattleViewController: UIViewController {
             finishMessage = "勇者の敗北..."
             
         }
-    
-    
-       let alert = UIAlertController(title:"バトル終了", message: finishMessage, prefferedstyle: .alert)
+       let alert = UIAlertController(title:"バトル終了", message: finishMessage, preferredStyle: .alert)
        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
     
-          self.dismiss(animated: true, completion: nil
-        })))
+          self.dismiss(animated: true, completion: nil)
+       }))
        present(alert, animated: true, completion: nil)
    
+    }
+        
+    //勝敗判定をする
+    func judgeBattle(){
+            if player.currentHP <= 0 {
+                
     }
     
     
     @IBAction func atttackAction(){
+        
         if isPlayerAttackAvalable {
             
             techMonManager.damageAnimation(imageView: enemyImageView)
-            techMonManager.playerSE(fileName: "SE_attack")
+            techMonManager.playSE(fileName: "SE_attack")
             
-            enemyHP -= 30
-            playerMP = 0
+            enemycurrentHP -= 30
+            playercurrentMP = 0
             
             enemyHPLabel.text = "\(enemyHP)/ 200"
             playerMPLabel.text = "\(playerMP)/20"
@@ -171,5 +192,6 @@ class BattleViewController: UIViewController {
     }
     */
 
+}
 }
 }
